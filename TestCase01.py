@@ -11,10 +11,10 @@ class MyTestCase(unittest.TestCase):
     def setUp(self):
         desired_caps = {}
         desired_caps['platformName'] = 'Android'
-        desired_caps['platformVersion'] = '8.0.0'
-        desired_caps['deviceName'] = '8DF6R16A10005912'
-        # desired_caps['platformVersion'] = '6.0.1'
-        # desired_caps['deviceName'] = 'M92QACQCQU3LV'
+        # desired_caps['platformVersion'] = '8.0.0'
+        # desired_caps['deviceName'] = '8DF6R16A10005912'
+        desired_caps['platformVersion'] = '6.0.1'
+        desired_caps['deviceName'] = 'M92QACQCQU3LV'
         desired_caps['appPackage'] = 'com.example.app.debug'
         desired_caps['appActivity'] = 'com.example.app.MainActivity'
         desired_caps['noReset'] = 'true'
@@ -44,8 +44,12 @@ class MyTestCase(unittest.TestCase):
         y2 = int(screen_size[1] * 0.75)  # 终点y坐标
         self.driver.swipe(x1, y1, x1, y2, t)
 
-    def _find_by_scroll(self,item_name):
-        'new UIScrollable'
+    def test_find_by_scroll(self):
+        self.driver.find_element_by_id('com.example.app.debug:id/btn_example_sms').click()
+        time.sleep(3)
+        item = self.driver.find_element_by_android_uiautomator('new UiScrollable(new UiSelector().scrollable(true).instance(0)).getChildByText(new UiSelector().className("android.widget.android.widget.RelativeLayout"),"'+"139邮箱"+'")')
+        item.click()
+
     # 网络设置
     def test_network(self):
         self.driver.set_network_connection(ConnectionType.DATA_ONLY)
