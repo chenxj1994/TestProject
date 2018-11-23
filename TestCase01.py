@@ -44,11 +44,24 @@ class MyTestCase(unittest.TestCase):
         y2 = int(screen_size[1] * 0.75)  # 终点y坐标
         self.driver.swipe(x1, y1, x1, y2, t)
 
-    def test_find_by_scroll(self):
+    # 测试工商银行端口下是否有两个菜单
+    def test_scrollable(self):
         self.driver.find_element_by_id('com.example.app.debug:id/btn_example_sms').click()
-        time.sleep(3)
-        item = self.driver.find_element_by_android_uiautomator('new UiScrollable(new UiSelector().scrollable(true).instance(0)).getChildByText(new UiSelector().className("android.widget.android.widget.RelativeLayout"),"'+"139邮箱"+'")')
-        item.click()
+        ua_scroll = 'new UiScrollable(new UiSelector().className("android.support.v7.widget.RecyclerView")).scrollIntoView(new UiSelector().text("工商银行"))'
+        self.driver.find_element_by_android_uiautomator(ua_scroll).click()
+        path = '//*[@resource-id="com.example.app.debug:id/bottom_view"]/android.widget.LinearLayout'
+        els = self.driver.find_elements_by_xpath(path)
+        self.assertEqual(2, len(els))
+
+    # 测试工商银行的端口下的短信是否有卡片化
+    def test_if_parse_to_card(self):
+        self.driver.find_element_by_id('com.example.app.debug:id/btn_example_sms').click()
+        ua_scroll = 'new UiScrollable(new UiSelector().className("android.support.v7.widget.RecyclerView")).scrollIntoView(new UiSelector().text("工商银行"))'
+        self.driver.find_element_by_android_uiautomator(ua_scroll).click()
+        time.sleep(5)
+        path_2 =  '//*[@resource-id="com.example.app.debug:id/rv_sms"]/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.TextView'
+        els = self.driver.find_elements_by_xpath(path_2)
+        self.assertEqual(0,len(els))
 
     # 网络设置
     def test_network(self):
@@ -70,15 +83,15 @@ class MyTestCase(unittest.TestCase):
         # 通过子节点找父节点
         fatherXpath = '//*[@resource-id="com.example.app.debug:id/tv_mp_menu_item" and @text = "进入邮箱"]/..'
         self.driver.find_element_by_xpath(fatherXpath).click()
-        time.sleep(8)
+        time.sleep(5)
         # 截图
-        # self.driver.get_screenshot_as_file("C:\\pyProjects\\TestProject\\screenShot\\我的.png")
+        self.driver.get_screenshot_as_file("C:\\pyProjects\\TestProject\\screenShot\\我的.png")
         # WebDriverWait(self.driver, 8).until(lambda x:x.find_element_by_class_name('com.tencent.tbs.core.webkit.WebView'))
         print(self.driver.contexts)
         time.sleep(5)
         # 版本号57.0.2987.132
         # 换台手机试试
-        self.driver._switch_to.context('WEBVIEW_com.example.app.debug')
+        # self.driver._switch_to.context('WEBVIEW_com.example.app.debug')
 
     def tearDown(self):
         pass
